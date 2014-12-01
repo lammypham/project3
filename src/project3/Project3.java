@@ -14,7 +14,7 @@ import java.util.regex.*;
 public class Project3 {
 	private Map<Integer, Jobs> _jobsMap = new HashMap<Integer, Jobs>();
 	private Map<Integer, List<Double>> _jobsVector = new HashMap<Integer, List<Double>>();
-	
+	Set<String> st = new HashSet<String>();
 	public void execute(String inputDir, String outputFile) throws Exception
 	{
 		File inDir = new File(inputDir);
@@ -78,6 +78,7 @@ public class Project3 {
 			{
 				if(!excludeWord(w))
 				{
+					
 					double freq = termFreq(ar, w);
 					double inv = IDF(_jobsMap, w);
 					double tfidf = freq * inv;
@@ -91,8 +92,8 @@ public class Project3 {
 					lst.add(tfidf);
 				}
 			}
-			System.out.println(j.getDesc());
-			System.out.println(_jobsVector.get(n));
+			//System.out.println(j.getDesc());
+			//System.out.println(_jobsVector.get(n));
 		}
 		
 	}
@@ -126,6 +127,8 @@ public class Project3 {
 			{
 				String desc = ar[1].replaceAll("\\<.*?>", "").replace("\\r","").replace("\\n","").replace("//r","");
 				jobs.setDesc(desc);
+				String[] splitDesc = desc.split(" ");
+				st.addAll(Arrays.asList(splitDesc));
 			}
 			
 			if (ar.length > 2)
