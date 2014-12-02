@@ -73,7 +73,7 @@ public class Project3 {
 			}
 			int vectorSize = _jobsVector.values().iterator().next().size();
 			int flag = 0;
-			int kVal = 3;
+			int kVal = 50;
 			double max = Math.pow(10,10);
 			double distance = 0.0;
 			boolean convergence = true;
@@ -84,14 +84,14 @@ public class Project3 {
 			
 			for(int i=0; i < kVal; i++)
 			{
-				double d = 0.005;
+				double d = 0.000000075;
 				List<Double> xVal = new ArrayList<Double>();
 				for(int j=0; j < vectorSize; j++)
 				{
 					xVal.add(d);							
 				}
 				
-				d+= .02;
+				d+= .000125;
 				
 				Centroid c = new Centroid(xVal);
 				centroid.add(c);
@@ -124,7 +124,7 @@ public class Project3 {
 				int vsize = data.getData().size();
 				for (int k = 0; k < kVal ; k++)
 				{
-					double[] totalVector = new double[vsize];
+					double[] totalVector = new double[vectorSize];
 					double vectorCount = 0.0;
 					for (int n = 0; n < dataList.size(); n ++)
 					{
@@ -137,9 +137,9 @@ public class Project3 {
 					
 					if(vectorCount > 0)
 					{
-						double[] newCentroid = new double[vsize];
+						double[] newCentroid = new double[vectorSize];
 						List<Double> temp = new ArrayList<Double>();
-						for (int c = 0; c < vsize; c++)
+						for (int c = 0; c < vectorSize; c++)
 						{
 							newCentroid[c] = totalVector[c]/vectorCount;
 							temp.add(newCentroid[c]);
@@ -151,6 +151,69 @@ public class Project3 {
 
 				}
 				System.out.println(String.format("cluster: %d - lst: %d-  distance: %f - min: %f", data.getCluster(), lst.size(), distance, min));
+			}
+			
+			while(convergence)
+			{
+				
+					idx = 2;
+					for (int k = 0; k < kVal; k++)
+					{
+						double[]totalVector = new double[vectorSize];
+						double vectorCount = 0.0;
+						for(int n = 0; n < dataList.size(); n ++)
+						{
+							if(dataList.get(n).getCluster() == k )
+							{
+								totalVector[n] += dataList.get(n).getData().get(n);
+								vectorCount ++;
+							}
+						}
+						if(vectorCount > 0)
+						{
+							double[] newCentroid = new double[vectorSize];
+							List<Double> temp = new ArrayList<Double>();
+							for(int c = 0; c < vectorSize; c++)
+							{
+								newCentroid[c] = totalVector[c]/vectorCount;
+								temp.add(newCentroid[c]);
+							}
+							centroid.get(k).setNewCentroid(temp);
+						}
+					}
+					
+					convergence = false;
+					
+					for(int d = 0; d < dataList.size(); d ++)
+					{
+						Data tmp = dataList.get(d);
+						min = 999999.9;
+						for(int i = 0; i < kVal; i ++)
+						{
+							distance = calculateDist(tmp.getData(), centroid.get(i));
+							if (distance < min)
+							{
+								min = distance;
+								clusterID = i;
+							}
+							
+						}
+						tmp.setCluster(clusterID);
+						System.out.println(String.format("cluster: %d - lst: %d-  distance: %f - min: %f", tmp.getCluster(), tmp.getData().size(), distance, min));
+
+						if(tmp.getCluster() != clusterID)
+						{
+							tmp.setCluster(clusterID);
+							convergence = true;
+						}
+					}
+					
+
+				
+				System.out.println("iteration: " + idx);
+				
+				idx++;
+				return;
 			}
 			
 	
@@ -224,7 +287,7 @@ public class Project3 {
 				jobs.setReqs(ar[2]);
 			}
 			_jobsMap.put(jobs.getId(), jobs);
-			if (idx ++ > 250)
+			if (idx ++ > 1500)
 			{
 				break;
 			}
