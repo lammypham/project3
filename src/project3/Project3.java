@@ -23,13 +23,10 @@ public class Project3 {
 	{
 		File inDir = new File(inputDir);
 		File outFile = new File(outputFile + "/output.tsv");
-		
 		System.out.println("Processing Jobs");
 		processJobs(inDir);
 		System.out.println("Finished Jobs");
 		System.out.println("Processing Cluster");
-		
-
 		
 			for (Integer m: _jobsMap.keySet())
 			{
@@ -73,7 +70,7 @@ public class Project3 {
 			}
 			int vectorSize = _jobsVector.values().iterator().next().size();
 			int flag = 0;
-			int kVal = 50;
+			int kVal = 3;
 			double max = Math.pow(10,10);
 			double distance = 0.0;
 			boolean convergence = true;
@@ -81,17 +78,19 @@ public class Project3 {
 			int total = _jobsMap.size();
 			int clusterID = 0;
 			ArrayList<Centroid> centroid = new ArrayList<Centroid>();
-			
+			double SSE = 0.0;
+			double d = 0.090564875;
 			for(int i=0; i < kVal; i++)
 			{
-				double d = 0.000000075;
+				
 				List<Double> xVal = new ArrayList<Double>();
 				for(int j=0; j < vectorSize; j++)
 				{
 					xVal.add(d);							
 				}
 				
-				d+= .000125;
+				d = d/ kVal;
+				//d+= .06;
 				
 				Centroid c = new Centroid(xVal);
 				centroid.add(c);
@@ -150,9 +149,14 @@ public class Project3 {
 					}
 
 				}
+				if(distance > 0.0)
+				{
+					SSE = SSE + Math.pow(distance, 2);
+				}
+			
 				System.out.println(String.format("cluster: %d - lst: %d-  distance: %f - min: %f", data.getCluster(), lst.size(), distance, min));
 			}
-			
+			System.out.println(String.format("SSE: %f",SSE));
 			while(convergence)
 			{
 				
@@ -184,9 +188,9 @@ public class Project3 {
 					
 					convergence = false;
 					
-					for(int d = 0; d < dataList.size(); d ++)
+					for(int p = 0; p < dataList.size(); p ++)
 					{
-						Data tmp = dataList.get(d);
+						Data tmp = dataList.get(p);
 						min = 999999.9;
 						for(int i = 0; i < kVal; i ++)
 						{
@@ -199,7 +203,7 @@ public class Project3 {
 							
 						}
 						tmp.setCluster(clusterID);
-						System.out.println(String.format("cluster: %d - lst: %d-  distance: %f - min: %f", tmp.getCluster(), tmp.getData().size(), distance, min));
+						//System.out.println(String.format("cluster: %d - lst: %d-  distance: %f - min: %f", tmp.getCluster(), tmp.getData().size(), distance, min));
 
 						if(tmp.getCluster() != clusterID)
 						{
@@ -224,10 +228,31 @@ public class Project3 {
 		String[] exclude = {"a","about","above","after","again","against","all","am","any","aren't","across", "an", "and", "are", "as", "at", "be","been","because", "before",
 				"being","below","between",
 				"but", "by","can","can't","cannot","could","couldn't","did","didn't","do","does","doing","don't","during","down","each","few","from","further",
-				"for","had","hadn't","has","hasn't","how","however","have", "if", "in", "into", "is", "it",
-				"no", "not", "of", "on", "or", "such",
-				"that", "the", "their", "then", "there", "these",
-				"they", "this", "to", "was", "will", "with","you","your","&", "", "/","-","per","rep","staff","general","assistant"};
+				"for","had","hadn't","has","hasn't","how","however","have", "if", "in", "into", "is", "it","isn't", "let's","me",
+				"more","most","mustn't", "my","myself","nor","no", "not", "of", "on", "or", 
+				"only","other","ought","ours","our","ourselves","out","own","same","she","hire","time","jobs","service",
+				"such","should","shouldn't", "so","some","than","them","themselves","theirs",
+				"that", "the", "their", "then", "there", "these","they'd","they'll","those","through","thorough","too",
+				"under","until","up","very","we","we'd","when","while","why","won't","would","wouldn't","men","women","who","set","hourly","hour","now",
+				"long","term","full","love","help","make","find","seek","search","searching","position","apply","applied","applies","terms","fully","made","found","finds",
+				"dedicates","dedicate","dedicated","looks","look","looking","join","joins","joined","require","requires","required","need","needs",
+				"commit","committed","commits","many","main","mains","seeking","prepare","prepares","prepared","preparing","?",",",":","%","$","(",")","@","!","*",
+				"...","/","","0","1","2","3","4","5","6","7","8","9","0","must","meet","meeting","size","within","may","take","taken","took","needed","maintains","maintain",
+				"must","around","day","us","one","\t", "for:","Opportunity:","Classification:","Responsibilities:","RESPONSIBILITIES:",
+				"include","limited","limits","follow","following:","following","followed","follows","strong","start","end","life","range","resume","telephone","work","behavior","behaviors",
+				"behaving","behaves","behave","change","changes","changing","appropiate","allows","also","amongst","anybody","anyways","appropriate",
+				"aside","available","because","before","com","consider","certain","definitely","don't","differen't","each","et","fifth","follows",
+				"four","gets","goes","greetings","has","he","her","herin","him","how","i'm","immediate","indicate","instead","it","itself",
+				"later","least","likely","more","nd","of","nothing","others","ourselves","own",
+				"they", "this", "to", "was", "will", "with","you","your","&", "", "/","-","per","rep","staff","general","assistant",
+				"according","actually","afterwards","allow","all","alone","already","appreciate","been","became","co","changes","five","first","former","hello","ie","ignored","inc","inc.",
+				"yes","wish","whom","whose","went","title:","Compensation:","administrative","assistantdepartment:","to:","currently","throughout","located","employed","go","getter",
+				"working","work","works","worked","plus","waste","new","room","copy","real","bring","brings","brought","order","orders","ordered",
+				"responsible","website","support","calls","manner","owners","team","including","contract","ensure","ensured","ensures","ensuring",
+				"asssist","local","family","suburbs","special","project","exciting","opportunity","deliver","delievered","delivers","signed",
+				"Â","sells","sell","selling","inch","wide","mile","deep","process","culture","busy","calendar","able","interest","interested",
+				"consider","considers","considered","add","adds","addition","like","likely","likelihood","space","part","moving","fast","pace",
+				"well","known",};
 		boolean result = false;
 		for(String s : exclude)
 		{
@@ -246,7 +271,7 @@ public class Project3 {
 		String[] ar = desc.split(" ");
 		for(int i=0; i < ar.length; i++)
 		{
-			if(excludeWord(ar[i]))
+			if(excludeWord(ar[i].toLowerCase()))
 				ar[i] = "";
 		}
 		StringBuilder sb = new StringBuilder();
@@ -287,7 +312,7 @@ public class Project3 {
 				jobs.setReqs(ar[2]);
 			}
 			_jobsMap.put(jobs.getId(), jobs);
-			if (idx ++ > 1500)
+			if (idx ++ > 500)
 			{
 				break;
 			}
