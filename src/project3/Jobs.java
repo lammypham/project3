@@ -7,6 +7,7 @@ public class Jobs {
 	private Integer _id;
 	private String _description;
 	private String _requirements;
+	private Integer _clusterID;
 	public Jobs (Integer id)
 	{
 		_id = id;
@@ -36,4 +37,5 @@ public class Jobs {
 	{
 		return _requirements;
 	}
+	
 }
